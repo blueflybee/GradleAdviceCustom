@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply from: "$rootDir/sysbuild/version.gradle"
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.yjcloud.gradleadvicecustom"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode appVersionCode
+        versionName appVersionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions 'mode'
+    productFlavors {
+
+        dev {
+            dimension 'mode'
+        }
+        prod {
+            dimension 'mode'
+        }
+    }
+
+    applicationVariants.all { variant ->
+//        println "variant.baseName = $variant.baseName"
+//        println "variant.name = $variant.name"
+//        println "variant.buildType.name = $variant.buildType.name"
+//        println "variant.productFlavors.name = ${variant.productFlavors.get(0).name}"
+//        println "variant.description = $variant.description"
+//        println "variant.flavorName = $variant.flavorName"
+//        println "variant.dirName = $variant.dirName"
+//        println "-------------------------------------"
+
+        variant.outputs.all { output ->
+//            println "output.name = $output.name"
+//            println "output.outputFile.name = $output.outputFile.name"
+            outputFileName = project.name + "-" + variant.name + "-v" + appVersionName + "-" + buildTime() + ".apk"
+            println "outputFileName = $outputFileName"
+
+
+        }
+
+    }
+}
+
+def buildTime() {
+    return new Date().format('yyyyMMdd')
+}
+
+task printVersion() {
+    doLast {
+        println "versionCode = $appVersionCode"
+        println "versionName = $appVersionName"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
